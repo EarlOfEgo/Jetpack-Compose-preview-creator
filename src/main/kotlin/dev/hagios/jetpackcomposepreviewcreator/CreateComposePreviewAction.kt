@@ -6,11 +6,16 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.CommonDataKeys.PSI_ELEMENT
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiDocumentManager
+import dev.hagios.jetpackcomposepreviewcreator.settings.PreviewSettings
+import dev.hagios.jetpackcomposepreviewcreator.settings.Visibility
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.js.descriptorUtils.getKotlinTypeFqName
+import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
@@ -27,6 +32,7 @@ class CreateComposePreviewAction : AnAction() {
         val parameters = function.valueParameters
         val editor = e.getRequiredData(CommonDataKeys.EDITOR)
         val project = e.getRequiredData(CommonDataKeys.PROJECT)
+        val settings = project.service<PreviewSettings>()
         val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) as? KtFile ?: return
 
         val ktPsiFactory = KtPsiFactory(project)
@@ -35,7 +41,8 @@ class CreateComposePreviewAction : AnAction() {
             "${ktParameter.nameAsSafeName} = ${ktParameter.defaultValue?.text ?: parameterDefaultValue}"
         }
 
-        val newFunction = ktPsiFactory.createFunction("fun ${functionName}Preview(){$functionName($functionParameter)}")
+        val newFunction =
+            ktPsiFactory.createFunction("fun ${functionName}${settings.functionNameExtension}(){$functionName($functionParameter)}")
 
         val importFqName = FqName("androidx.compose.ui.tooling.preview.Preview")
         val importDirectiveList = psiFile.collectDescendantsOfType<KtImportDirective>()
@@ -43,6 +50,8 @@ class CreateComposePreviewAction : AnAction() {
         val isImported = importDirectiveList.any { it.importedFqName == importFqName }
         newFunction.addAnnotationEntry(ktPsiFactory.createAnnotationEntry("@Preview"))
         newFunction.addAnnotationEntry(ktPsiFactory.createAnnotationEntry("@Composable"))
+
+        settings.defaultVisibility.toModifier()?.let { newFunction.addModifier(it) }
         WriteCommandAction.runWriteCommandAction(project) {
             psiFile.add(newFunction)
             if (!isImported) {
@@ -65,6 +74,13 @@ class CreateComposePreviewAction : AnAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
+}
+
+private fun Visibility.toModifier(): KtModifierKeywordToken? = when (this) {
+    Visibility.public -> null
+    Visibility.private -> KtTokens.PRIVATE_KEYWORD
+    Visibility.internal -> KtTokens.INTERNAL_KEYWORD
+    Visibility.protected -> KtTokens.PROTECTED_KEYWORD
 }
 
 

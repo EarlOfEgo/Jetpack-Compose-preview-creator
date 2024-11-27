@@ -11,7 +11,16 @@
         <action id="CreateComposePreviewAction"
                 class="dev.hagios.jetpackcomposepreviewcreator.CreateComposePreviewAction" text="Create Compose Preview"
                 description="Creates a preview for this compose function">
-            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
     </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable
+                parentId="tools"
+                instance="dev.hagios.jetpackcomposepreviewcreator.settings.PreviewConfigurable"
+                id="dev.hagios.jetpackcomposepreviewcreator.settings.PreviewConfigurable"
+                displayName="Composable Preview"
+                nonDefaultProject="true"/>
+    </extensions>
 </idea-plugin>
