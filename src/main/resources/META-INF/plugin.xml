@@ -1,18 +1,17 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.earlofego.jetpackcomposepreviewcreator</id>
-    <name>Jetpack-Compose-preview-creator</name>
-    <vendor>earlofego</vendor>
+    <id>dev.hagios.jetpackcomposepreviewcreator</id>
+    <name>Jetpack Compose Preview Creator</name>
+    <vendor>Stephan Hagios</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.earlofego.jetpackcomposepreviewcreator.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-    </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.earlofego.jetpackcomposepreviewcreator.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
+    <actions>
+        <action id="CreateComposePreviewAction"
+                class="dev.hagios.jetpackcomposepreviewcreator.CreateComposePreviewAction" text="Create Compose Preview"
+                description="Creates a preview for this compose function">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
