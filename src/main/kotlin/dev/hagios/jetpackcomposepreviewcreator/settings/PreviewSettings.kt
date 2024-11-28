@@ -25,6 +25,24 @@ class PreviewSettings : SimplePersistentStateComponent<PreviewSettingsState>(Pre
             state.addParameterNames = value
         }
 
+    var useDefaultValues
+        get() = state.useDefaultValues
+        set(value) {
+            state.useDefaultValues = value
+        }
+
+    var wrapInTheme
+        get() = state.wrapInTheme
+        set(value) {
+            state.wrapInTheme = value
+        }
+
+    var defaultTheme
+        get() = state.defaultTheme ?: ""
+        set(value) {
+            state.defaultTheme = value
+        }
+
     companion object {
         fun getInstance(project: Project): PreviewSettings = project.service()
     }

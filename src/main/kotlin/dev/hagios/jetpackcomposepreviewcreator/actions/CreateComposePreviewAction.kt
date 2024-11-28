@@ -27,6 +27,7 @@ class CreateComposePreviewAction : AnAction() {
         val settings = project.service<PreviewSettings>()
         val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) as? KtFile ?: return
 
+
         val ktPsiFactory = KtPsiFactory(project)
 
         val newFunction = function.generateNewPreviewFunction(ktPsiFactory, settings)

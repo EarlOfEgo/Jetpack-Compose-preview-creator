@@ -22,10 +22,25 @@ internal fun KtFunction.generateNewPreviewFunction(
     val functionParameter = parameters.joinToString(", ") { ktParameter ->
         val parameterDefaultValue = getDefaultParameterValue(ktParameter)
         val parameterName = if (settings.addParameterNames) "${ktParameter.name} = " else ""
-        "$parameterName${ktParameter.defaultValue?.text ?: parameterDefaultValue}"
+        val value = if (settings.useDefaultValues) {
+            ktParameter.defaultValue?.text ?: parameterDefaultValue
+        } else parameterDefaultValue
+        "$parameterName$value"
     }
 
-    return ktPsiFactory.createFunction("fun ${functionName}${settings.functionNameExtension}(){$functionName($functionParameter)}")
+    val functionString = buildString {
+        append("fun ", functionName, settings.functionNameExtension, "(){")
+        if (settings.wrapInTheme && settings.defaultTheme.isNotBlank()) {
+            append(settings.defaultTheme, "{")
+        }
+        append(functionName, "(", functionParameter, ")")
+        if (settings.wrapInTheme && settings.defaultTheme.isNotBlank()) {
+            append("}")
+        }
+        append("}")
+    }
+
+    return ktPsiFactory.createFunction(functionString)
         .apply {
             addAnnotationEntry(ktPsiFactory.createAnnotationEntry("@Preview"))
             addAnnotationEntry(ktPsiFactory.createAnnotationEntry("@Composable"))
