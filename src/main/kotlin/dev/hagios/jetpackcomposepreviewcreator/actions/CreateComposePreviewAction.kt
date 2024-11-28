@@ -8,9 +8,13 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiDocumentManager
 import dev.hagios.jetpackcomposepreviewcreator.generateNewPreviewFunction
+import dev.hagios.jetpackcomposepreviewcreator.isComposableToplevelFunction
 import dev.hagios.jetpackcomposepreviewcreator.settings.PreviewSettings
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtImportDirective
+import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.resolve.ImportPath
 
@@ -44,12 +48,10 @@ class CreateComposePreviewAction : AnAction() {
 
     override fun update(e: AnActionEvent) {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
-        e.presentation.isEnabledAndVisible = (element as? KtNamedFunction)?.let { ktNamedFunction ->
-            ktNamedFunction.annotationEntries.any { annotationEntry: KtAnnotationEntry ->
-                annotationEntry.typeReference?.text == "Composable"
-            } && ktNamedFunction.isTopLevel
-        } ?: false
+        e.presentation.isEnabledAndVisible =
+            (element as? KtNamedFunction)?.isComposableToplevelFunction ?: false
     }
+
 
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT

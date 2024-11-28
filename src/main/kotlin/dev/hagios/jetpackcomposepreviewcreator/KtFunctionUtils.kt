@@ -8,10 +8,7 @@ import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.js.descriptorUtils.getKotlinTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtFunction
-import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtParameter
-import org.jetbrains.kotlin.psi.KtPsiFactory
+import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.lazy.BodyResolveMode
 import org.jetbrains.kotlin.types.KotlinType
@@ -24,7 +21,8 @@ internal fun KtFunction.generateNewPreviewFunction(
     val parameters = valueParameters
     val functionParameter = parameters.joinToString(", ") { ktParameter ->
         val parameterDefaultValue = getDefaultParameterValue(ktParameter)
-        "${ktParameter.nameAsSafeName} = ${ktParameter.defaultValue?.text ?: parameterDefaultValue}"
+        val parameterName = if (settings.addParameterNames) "${ktParameter.name} = " else ""
+        "$parameterName${ktParameter.defaultValue?.text ?: parameterDefaultValue}"
     }
 
     return ktPsiFactory.createFunction("fun ${functionName}${settings.functionNameExtension}(){$functionName($functionParameter)}")
@@ -41,6 +39,12 @@ internal fun Visibility.toModifier(): KtModifierKeywordToken? = when (this) {
     Visibility.internal -> KtTokens.INTERNAL_KEYWORD
 }
 
+internal val KtNamedFunction.isComposableToplevelFunction: Boolean
+    get() {
+        return annotationEntries.any { annotationEntry: KtAnnotationEntry ->
+            annotationEntry.typeReference?.text == "Composable"
+        } && isTopLevel
+    }
 
 private fun getDefaultParameterValue(ktParameter: KtParameter): String {
     val context = ktParameter.analyze(BodyResolveMode.PARTIAL)

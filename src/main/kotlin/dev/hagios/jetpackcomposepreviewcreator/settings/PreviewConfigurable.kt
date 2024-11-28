@@ -3,10 +3,7 @@ package dev.hagios.jetpackcomposepreviewcreator.settings
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.dsl.builder.bindItem
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.builder.toNullableProperty
+import com.intellij.ui.dsl.builder.*
 
 class PreviewConfigurable(project: Project) : BoundConfigurable("Composable Preview") {
     val previewSettings = PreviewSettings.getInstance(project)
@@ -20,6 +17,10 @@ class PreviewConfigurable(project: Project) : BoundConfigurable("Composable Prev
             row("Default visibility:") {
                 comboBox(Visibility.entries)
                     .bindItem(previewSettings::defaultVisibility.toNullableProperty())
+            }
+            row {
+                checkBox("Add parameter names")
+                    .bindSelected(previewSettings::addParameterNames)
             }
         }
     }

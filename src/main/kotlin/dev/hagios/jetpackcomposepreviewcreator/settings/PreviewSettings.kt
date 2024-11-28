@@ -19,6 +19,12 @@ class PreviewSettings : SimplePersistentStateComponent<PreviewSettingsState>(Pre
             state.defaultVisibility = value
         }
 
+    var addParameterNames
+        get() = state.addParameterNames
+        set(value) {
+            state.addParameterNames = value
+        }
+
     companion object {
         fun getInstance(project: Project): PreviewSettings = project.service()
     }
