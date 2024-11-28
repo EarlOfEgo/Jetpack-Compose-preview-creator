@@ -20,7 +20,7 @@ internal fun KtFunction.generateNewPreviewFunction(
     ktPsiFactory: KtPsiFactory,
     settings: PreviewSettings
 ): KtNamedFunction {
-    val functionName = fqName?.asString() ?: "Function"
+    val functionName = name ?: "Function"
     val parameters = valueParameters
     val functionParameter = parameters.joinToString(", ") { ktParameter ->
         val parameterDefaultValue = getDefaultParameterValue(ktParameter)
@@ -31,6 +31,7 @@ internal fun KtFunction.generateNewPreviewFunction(
         .apply {
             addAnnotationEntry(ktPsiFactory.createAnnotationEntry("@Preview"))
             addAnnotationEntry(ktPsiFactory.createAnnotationEntry("@Composable"))
+            settings.defaultVisibility.toModifier()?.let { addModifier(it) }
         }
 }
 

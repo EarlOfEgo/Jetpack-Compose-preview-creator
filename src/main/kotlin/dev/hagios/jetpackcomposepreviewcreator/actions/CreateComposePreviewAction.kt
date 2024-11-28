@@ -9,7 +9,6 @@ import com.intellij.openapi.components.service
 import com.intellij.psi.PsiDocumentManager
 import dev.hagios.jetpackcomposepreviewcreator.generateNewPreviewFunction
 import dev.hagios.jetpackcomposepreviewcreator.settings.PreviewSettings
-import dev.hagios.jetpackcomposepreviewcreator.toModifier
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
@@ -33,7 +32,6 @@ class CreateComposePreviewAction : AnAction() {
 
         val isImported = importDirectiveList.any { it.importedFqName == importFqName }
 
-        settings.defaultVisibility.toModifier()?.let { newFunction.addModifier(it) }
         WriteCommandAction.runWriteCommandAction(project) {
             psiFile.add(newFunction)
             if (!isImported) {
