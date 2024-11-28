@@ -5,7 +5,7 @@
 name: Release
 on:
   release:
-    types: [prereleased, released]
+    types: [ prereleased, released ]
 
 jobs:
 
@@ -30,6 +30,13 @@ jobs:
         with:
           distribution: zulu
           java-version: 17
+
+      # Free GitHub Actions Environment Disk Space
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          large-packages: false
 
       # Setup Gradle
       - name: Setup Gradle
