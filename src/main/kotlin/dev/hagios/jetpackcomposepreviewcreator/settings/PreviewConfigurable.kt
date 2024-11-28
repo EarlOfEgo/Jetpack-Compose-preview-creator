@@ -13,7 +13,7 @@ class PreviewConfigurable(project: Project) : BoundConfigurable("Composable Prev
 
     override fun createPanel(): DialogPanel = panel {
         group("Creation") {
-            row("Function name extension:") {
+            row("Function name suffix:") {
                 textField()
                     .bindText(previewSettings::functionNameExtension)
             }
@@ -29,5 +29,4 @@ enum class Visibility {
     public,
     private,
     internal,
-    protected,
 }
