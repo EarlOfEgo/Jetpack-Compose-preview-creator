@@ -3,6 +3,7 @@ package dev.hagios.jetpackcomposepreviewcreator.settings
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 
@@ -40,10 +41,11 @@ class PreviewConfigurable(project: Project) : BoundConfigurable("Composable Prev
             row("Used Theme:") {
                 textField()
                     .bindText(previewSettings::defaultTheme)
-                    .cellValidation {
-                        addInputRule("Mustn't be empty") {
-                            it.text.isBlank()
-                        }
+                    .validationOnInput {
+                        if (it.text.isBlank()) {
+                            ValidationInfo("Mustn't be empty")
+                        } else
+                            null
                     }
                     .enabledIf(wrapInThemeCheckBox.selected)
                 contextHelp("The name of the theme composable. Note: Make sure that the last argument is of type composable.")
