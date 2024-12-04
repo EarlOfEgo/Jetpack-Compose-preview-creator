@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import dev.hagios.jetpackcomposepreviewcreator.generateNewPreviewFunction
 import dev.hagios.jetpackcomposepreviewcreator.isComposableToplevelFunction
@@ -28,23 +29,7 @@ class CreateComposePreviewAction : AnAction() {
         val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) as? KtFile ?: return
 
 
-        val ktPsiFactory = KtPsiFactory(project)
-
-        val newFunction = function.generateNewPreviewFunction(ktPsiFactory, settings)
-
-        val importFqName = FqName("androidx.compose.ui.tooling.preview.Preview")
-        val importDirectiveList = psiFile.collectDescendantsOfType<KtImportDirective>()
-
-        val isImported = importDirectiveList.any { it.importedFqName == importFqName }
-
-        WriteCommandAction.runWriteCommandAction(project) {
-            psiFile.add(newFunction)
-            if (!isImported) {
-                val importDirective = KtPsiFactory(project).createImportDirective(ImportPath(importFqName, false))
-                val importList = psiFile.importList
-                importList?.add(importDirective)
-            }
-        }
+        createPreviewFunction(project, function, settings, psiFile)
     }
 
     override fun update(e: AnActionEvent) {
@@ -56,5 +41,30 @@ class CreateComposePreviewAction : AnAction() {
 
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
+    }
+}
+
+fun createPreviewFunction(
+    project: Project,
+    function: KtNamedFunction,
+    settings: PreviewSettings,
+    psiFile: KtFile
+) {
+    val ktPsiFactory = KtPsiFactory(project)
+
+    val newFunction = function.generateNewPreviewFunction(ktPsiFactory, settings)
+
+    val importFqName = FqName("androidx.compose.ui.tooling.preview.Preview")
+    val importDirectiveList = psiFile.collectDescendantsOfType<KtImportDirective>()
+
+    val isImported = importDirectiveList.any { it.importedFqName == importFqName }
+
+    WriteCommandAction.runWriteCommandAction(project) {
+        psiFile.add(newFunction)
+        if (!isImported) {
+            val importDirective = KtPsiFactory(project).createImportDirective(ImportPath(importFqName, false))
+            val importList = psiFile.importList
+            importList?.add(importDirective)
+        }
     }
 }

@@ -8,5 +8,7 @@ class PreviewSettingsState : BaseState() {
     var addParameterNames by property(true)
     var useDefaultValues by property(true)
     var wrapInTheme by property(false)
+    var usedTheme by enum(Theme.project)
     var defaultTheme by string("MaterialTheme")
+    var projectTheme by string("")
 }

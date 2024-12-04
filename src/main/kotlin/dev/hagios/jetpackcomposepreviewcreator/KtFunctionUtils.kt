@@ -30,11 +30,11 @@ internal fun KtFunction.generateNewPreviewFunction(
 
     val functionString = buildString {
         append("fun ", functionName, settings.functionNameExtension, "(){")
-        if (settings.wrapInTheme && settings.defaultTheme.isNotBlank()) {
-            append(settings.defaultTheme, "{")
+        if (settings.wrapInTheme && settings.theme.isNotBlank()) {
+            append(settings.theme, "{")
         }
         append(functionName, "(", functionParameter, ")")
-        if (settings.wrapInTheme && settings.defaultTheme.isNotBlank()) {
+        if (settings.wrapInTheme && settings.theme.isNotBlank()) {
             append("}")
         }
         append("}")
