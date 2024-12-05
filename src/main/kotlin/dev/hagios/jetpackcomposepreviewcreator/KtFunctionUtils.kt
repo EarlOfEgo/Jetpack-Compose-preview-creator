@@ -20,7 +20,7 @@ internal fun KtFunction.generateNewPreviewFunction(
     val functionName = name ?: "Function"
     val parameters = valueParameters
     val functionParameter = parameters.joinToString(", ") { ktParameter ->
-        val parameterDefaultValue = getDefaultParameterValue(ktParameter)
+        val parameterDefaultValue = getDefaultParameterValue(ktParameter = ktParameter, settings = settings)
         val parameterName = if (settings.addParameterNames) "${ktParameter.name} = " else ""
         val value = if (settings.useDefaultValues) {
             ktParameter.defaultValue?.text ?: parameterDefaultValue
@@ -61,19 +61,19 @@ internal val KtNamedFunction.isComposableToplevelFunction: Boolean
         } && isTopLevel
     }
 
-private fun getDefaultParameterValue(ktParameter: KtParameter): String {
+private fun getDefaultParameterValue(ktParameter: KtParameter, settings: PreviewSettings): String {
     val context = ktParameter.analyze(BodyResolveMode.PARTIAL)
     val typeRef = ktParameter.typeReference ?: return "null"
     val type = context[BindingContext.TYPE, typeRef] ?: return "null"
     val isNullable = type.isMarkedNullable
-    return getDefaultParameterValue(type, isNullable)
+    return getDefaultParameterValue(type, isNullable, settings)
 }
 
-private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean): String {
+private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean, settings: PreviewSettings): String {
 
     return when {
-        isNullable -> "null"
-        type.isFunctionType -> getDefaultFunctionParameterValue(type)
+        isNullable && settings.useNullValues -> "null"
+        type.isFunctionType -> getDefaultFunctionParameterValue(type, settings)
         type.constructor.declarationDescriptor is ClassDescriptor -> {
             getPrimitiveDefaultValue(type.getKotlinTypeFqName(false)) {
                 val classDescriptor = type.constructor.declarationDescriptor as ClassDescriptor
@@ -82,7 +82,7 @@ private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean): Str
                     val constructorParamsValueList = constructor.valueParameters.joinToString(", ") { param ->
                         val paramType = param.type
                         val paramIsNullable = paramType.isMarkedNullable
-                        getDefaultParameterValue(paramType, paramIsNullable)
+                        getDefaultParameterValue(paramType, paramIsNullable, settings)
                     }
                     "${type.constructor.declarationDescriptor?.name}($constructorParamsValueList)"
                 } else {
@@ -97,7 +97,7 @@ private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean): Str
     }
 }
 
-private fun getDefaultFunctionParameterValue(type: KotlinType): String {
+private fun getDefaultFunctionParameterValue(type: KotlinType, settings: PreviewSettings): String {
     val parameterTypes = type.arguments.dropLast(1).map { it.type }
     val returnType = type.arguments.last().type
 
@@ -105,7 +105,7 @@ private fun getDefaultFunctionParameterValue(type: KotlinType): String {
         "_"
     }.ifEmpty { null }?.let { "$it -> " } ?: ""
 
-    val returnDefaultValue = getDefaultParameterValue(returnType, returnType.isMarkedNullable)
+    val returnDefaultValue = getDefaultParameterValue(returnType, returnType.isMarkedNullable, settings)
 
     return "{ $parameterValues$returnDefaultValue }"
 }

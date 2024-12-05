@@ -31,6 +31,12 @@ class PreviewSettings : SimplePersistentStateComponent<PreviewSettingsState>(Pre
             state.useDefaultValues = value
         }
 
+    var useNullValues
+        get() = state.useNullValues
+        set(value) {
+            state.useNullValues = value
+        }
+
     var wrapInTheme
         get() = state.wrapInTheme
         set(value) {

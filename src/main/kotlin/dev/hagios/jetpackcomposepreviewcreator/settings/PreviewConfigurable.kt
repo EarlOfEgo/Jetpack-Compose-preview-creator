@@ -57,6 +57,11 @@ class PreviewConfigurable(private val project: Project, private val coroutineSco
                     .bindSelected(previewSettings::useDefaultValues)
                 contextHelp("Uses the default values of parameters.")
             }
+            row {
+                checkBox("Initialize with null")
+                    .bindSelected(previewSettings::useNullValues)
+                contextHelp("Uses null as value when the parameter is nullable.")
+            }
         }
         group("Theme") {
             lateinit var wrapInThemeCheckBox: Cell<JBCheckBox>
