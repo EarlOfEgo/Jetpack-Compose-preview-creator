@@ -5,15 +5,17 @@
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/25951-jetpack-compose-preview-creator.svg)](https://plugins.jetbrains.com/plugin/25951-jetpack-compose-preview-creator)
 
 <!-- Plugin description -->
-Plugin to quickly create previews for composable functions. The plugin takes the function name and arguments and wraps
+Plugin to quickly create preview functions for composables. The plugin takes the composable function name and arguments
+and wraps
 it into a preview function, which then gets added to the end of the file.
-Just use the generate menu (comand + enter) when your cursor is on the name of a composable function and select "
+Just use the generate menu (command + enter) when your cursor is on the name of a composable function and select "
 Generate Compose Preview". The preview is added at the end of the file with an suffix you can configure in the settings.
 <p>Features:
   <li>Initializes all parameters of the composable(also classes with their constructor call)</li>
   <li>Select a default visibility of the generated preview function</li>
   <li>Choose if parameter names are used in the composable function call</li>
   <li>Choose if the default values of a parameter are used or if the plugin should create values</li>
+  <li>Choose if nullable parameters are initialized with null or a value</li>
   <li>Wrap the composable in a theme</li>
 </p>
 <!-- Plugin description end -->

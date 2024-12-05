@@ -10,7 +10,7 @@
     <actions>
         <action id="CreateComposePreviewAction"
                 class="dev.hagios.jetpackcomposepreviewcreator.actions.CreateComposePreviewAction"
-                text="Create Compose Preview"
+                text="Create Compose Preview Function"
                 description="Creates a preview for this compose function">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
