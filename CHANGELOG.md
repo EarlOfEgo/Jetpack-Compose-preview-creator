@@ -8,6 +8,9 @@
 
 ### Added
 
+- v1.2.0 Handling of list, set and map as arguments
+- v1.2.0 Option to choose between null and default value for nullable values
+- v1.2.0 Option to use custom theme or project theme(gets detected automatically)
 - v1.1.0 Added settings for: parameter names, default values and theme
 - v1.0.0 initial release
 
