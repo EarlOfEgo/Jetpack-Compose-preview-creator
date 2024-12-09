@@ -1,4 +1,4 @@
-# Jetpack-Compose-preview-creator
+# Compose Preview Function Creator
 
 ![Build](https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/25951-jetpack-compose-preview-creator.svg)](https://plugins.jetbrains.com/plugin/25951-jetpack-compose-preview-creator)

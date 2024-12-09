@@ -5,6 +5,8 @@ import dev.hagios.jetpackcomposepreviewcreator.settings.Visibility
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
+import org.jetbrains.kotlin.idea.inspections.collections.isCollection
+import org.jetbrains.kotlin.idea.inspections.collections.isMap
 import org.jetbrains.kotlin.js.descriptorUtils.getKotlinTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -74,6 +76,8 @@ private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean, sett
     return when {
         isNullable && settings.useNullValues -> "null"
         type.isFunctionType -> getDefaultFunctionParameterValue(type, settings)
+        type.isCollection() -> getCollectionParameterValue(type)
+        type.isMap() -> getMapParameterValue(type)
         type.constructor.declarationDescriptor is ClassDescriptor -> {
             getPrimitiveDefaultValue(type.getKotlinTypeFqName(false)) {
                 val classDescriptor = type.constructor.declarationDescriptor as ClassDescriptor
@@ -86,7 +90,7 @@ private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean, sett
                     }
                     "${type.constructor.declarationDescriptor?.name}($constructorParamsValueList)"
                 } else {
-                    "${type.constructor.declarationDescriptor?.name}()"
+                    "object: ${type.constructor.declarationDescriptor?.name} {}"
                 }
             }
         }
@@ -95,6 +99,28 @@ private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean, sett
             getPrimitiveDefaultValue(type.getKotlinTypeFqName(false))
         }
     }
+}
+
+fun getMapParameterValue(type: KotlinType): String {
+    return type.constructor.declarationDescriptor?.name?.asString()?.let {
+        when (it) {
+            "Map" -> "emptyMap()"
+            "MutableMap" -> "mutableMapOf()"
+            else -> null
+        }
+    } ?: "object: ${type.constructor.declarationDescriptor?.name} {}"
+}
+
+fun getCollectionParameterValue(type: KotlinType): String {
+    return type.constructor.declarationDescriptor?.name?.asString()?.let {
+        when (it) {
+            "List" -> "emptyList()"
+            "MutableList" -> "mutableListOf()"
+            "Set" -> "emptySet()"
+            "MutableSet" -> "mutableSetOf()"
+            else -> null
+        }
+    } ?: "object: ${type.constructor.declarationDescriptor?.name} {}"
 }
 
 private fun getDefaultFunctionParameterValue(type: KotlinType, settings: PreviewSettings): String {
