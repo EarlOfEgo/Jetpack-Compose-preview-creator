@@ -45,6 +45,11 @@ class PreviewConfigurable(private val project: Project, private val coroutineSco
                     .bindItem(previewSettings::defaultVisibility.toNullableProperty())
                 contextHelp("The visibility of the created preview function. Note: public is omitted as it is the default visibility in Kotlin.")
             }
+            row("New function position:") {
+                comboBox(Position.entries)
+                    .bindItem(previewSettings::generatePosition.toNullableProperty())
+                contextHelp("The position of the generated preview function. Before or after the composable, or at the end of the file.")
+            }
         }
         group("Parameters") {
             row {
@@ -158,4 +163,10 @@ enum class Visibility {
 enum class Theme {
     custom,
     project
+}
+
+enum class Position {
+    before,
+    after,
+    `end of file`
 }

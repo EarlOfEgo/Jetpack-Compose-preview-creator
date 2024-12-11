@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import dev.hagios.jetpackcomposepreviewcreator.generateNewPreviewFunction
 import dev.hagios.jetpackcomposepreviewcreator.isComposableToplevelFunction
+import dev.hagios.jetpackcomposepreviewcreator.settings.Position
 import dev.hagios.jetpackcomposepreviewcreator.settings.PreviewSettings
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtFile
@@ -60,7 +61,12 @@ fun createPreviewFunction(
     val isImported = importDirectiveList.any { it.importedFqName == importFqName }
 
     WriteCommandAction.runWriteCommandAction(project) {
-        psiFile.add(newFunction)
+        when (settings.generatePosition) {
+            Position.before -> psiFile.addBefore(newFunction, function)
+            Position.after -> psiFile.addAfter(newFunction, function)
+            Position.`end of file` -> psiFile.add(newFunction)
+        }
+
         if (!isImported) {
             val importDirective = KtPsiFactory(project).createImportDirective(ImportPath(importFqName, false))
             val importList = psiFile.importList

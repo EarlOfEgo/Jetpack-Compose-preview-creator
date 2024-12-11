@@ -19,6 +19,12 @@ class PreviewSettings : SimplePersistentStateComponent<PreviewSettingsState>(Pre
             state.defaultVisibility = value
         }
 
+    var generatePosition
+        get() = state.generatePosition
+        set(value) {
+            state.generatePosition = value
+        }
+
     var addParameterNames
         get() = state.addParameterNames
         set(value) {
