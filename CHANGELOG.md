@@ -8,6 +8,7 @@
 ### Added
 
 - Choose the position where the generated preview function is placed in the file
+- Choose the behaviour when a preview function already exists
 
 ## [1.2.0] - 2024-12-09
 
@@ -25,5 +26,4 @@
 
 [Unreleased]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.2.0...HEAD
 [1.1.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/commits/v1.1.0
-
 [1.2.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/commits/v1.2.0

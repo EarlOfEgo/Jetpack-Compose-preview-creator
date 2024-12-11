@@ -25,6 +25,12 @@ class PreviewSettings : SimplePersistentStateComponent<PreviewSettingsState>(Pre
             state.generatePosition = value
         }
 
+    var overrideBehaviour
+        get() = state.overrideBehaviour
+        set(value) {
+            state.overrideBehaviour = value
+        }
+
     var addParameterNames
         get() = state.addParameterNames
         set(value) {

@@ -50,6 +50,11 @@ class PreviewConfigurable(private val project: Project, private val coroutineSco
                     .bindItem(previewSettings::generatePosition.toNullableProperty())
                 contextHelp("The position of the generated preview function. Before or after the composable, or at the end of the file.")
             }
+            row("When the function exists:") {
+                comboBox(Behaviour.entries)
+                    .bindItem(previewSettings::overrideBehaviour.toNullableProperty())
+                contextHelp("The behaviour when the preview function already exists. Replace will replace the old one, increment will create a new one with an incremented name and do nothing, does indeed nothing.")
+            }
         }
         group("Parameters") {
             row {
@@ -169,4 +174,10 @@ enum class Position {
     before,
     after,
     `end of file`
+}
+
+enum class Behaviour {
+    replace,
+    `do nothing`,
+    `increment`
 }

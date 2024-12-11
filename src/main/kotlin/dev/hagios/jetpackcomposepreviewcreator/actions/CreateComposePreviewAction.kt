@@ -8,8 +8,11 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import dev.hagios.jetpackcomposepreviewcreator.generateNewPreviewFunction
 import dev.hagios.jetpackcomposepreviewcreator.isComposableToplevelFunction
+import dev.hagios.jetpackcomposepreviewcreator.settings.Behaviour
 import dev.hagios.jetpackcomposepreviewcreator.settings.Position
 import dev.hagios.jetpackcomposepreviewcreator.settings.PreviewSettings
 import org.jetbrains.kotlin.name.FqName
@@ -54,6 +57,8 @@ fun createPreviewFunction(
     val ktPsiFactory = KtPsiFactory(project)
 
     val newFunction = function.generateNewPreviewFunction(ktPsiFactory, settings)
+    val previewFunction =
+        psiFile.children.filterIsInstance<KtNamedFunction>().firstOrNull { it.name == newFunction.name }
 
     val importFqName = FqName("androidx.compose.ui.tooling.preview.Preview")
     val importDirectiveList = psiFile.collectDescendantsOfType<KtImportDirective>()
@@ -61,10 +66,21 @@ fun createPreviewFunction(
     val isImported = importDirectiveList.any { it.importedFqName == importFqName }
 
     WriteCommandAction.runWriteCommandAction(project) {
-        when (settings.generatePosition) {
-            Position.before -> psiFile.addBefore(newFunction, function)
-            Position.after -> psiFile.addAfter(newFunction, function)
-            Position.`end of file` -> psiFile.add(newFunction)
+        if (previewFunction == null) {
+            addFunction(settings, psiFile, newFunction, function)
+        } else {
+            when (settings.overrideBehaviour) {
+                Behaviour.replace -> {
+                    previewFunction.replace(newFunction)
+                }
+
+                Behaviour.`do nothing` -> return@runWriteCommandAction
+                Behaviour.increment -> {
+                    val incrementedFunctionName = createIncrementedFunctionName(newFunction.name!!, psiFile)
+                    val renamedNewFunction = newFunction.setName(incrementedFunctionName)
+                    addFunction(settings, psiFile, renamedNewFunction, function)
+                }
+            }
         }
 
         if (!isImported) {
@@ -72,5 +88,30 @@ fun createPreviewFunction(
             val importList = psiFile.importList
             importList?.add(importDirective)
         }
+    }
+}
+
+fun createIncrementedFunctionName(currentFileName: String, psiFile: PsiFile): String {
+    val function = psiFile.children.filterIsInstance<KtNamedFunction>().firstOrNull { it.name == currentFileName }
+    return if (function != null) {
+        val incrementNumber = function.name?.last()?.digitToIntOrNull() ?: 0
+        val dropAmount = when {
+            incrementNumber == 0 -> 0
+            else -> 1
+        }
+        createIncrementedFunctionName("${function.name?.dropLast(dropAmount)}${incrementNumber + 1}", psiFile)
+    } else currentFileName
+}
+
+private fun addFunction(
+    settings: PreviewSettings,
+    psiFile: KtFile,
+    previewFunction: PsiElement,
+    composableFunction: KtNamedFunction
+) {
+    when (settings.generatePosition) {
+        Position.before -> psiFile.addBefore(previewFunction, composableFunction)
+        Position.after -> psiFile.addAfter(previewFunction, composableFunction)
+        Position.`end of file` -> psiFile.add(previewFunction)
     }
 }
