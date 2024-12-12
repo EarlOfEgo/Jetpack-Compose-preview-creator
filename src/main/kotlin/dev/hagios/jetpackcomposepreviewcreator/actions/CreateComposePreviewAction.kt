@@ -1,11 +1,14 @@
 package dev.hagios.jetpackcomposepreviewcreator.actions
 
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -74,7 +77,18 @@ fun createPreviewFunction(
                     previewFunction.replace(newFunction)
                 }
 
-                Behaviour.`do nothing` -> return@runWriteCommandAction
+                Behaviour.`do nothing` -> {
+                    NotificationGroupManager.getInstance()
+                        .getNotificationGroup("Compose Preview Function Generator Group")
+                        .createNotification("Function ${newFunction.name} already exists", NotificationType.INFORMATION)
+                        .addAction(object : AnAction("Change Behaviour...") {
+                            override fun actionPerformed(event: AnActionEvent) {
+                                ShowSettingsUtil.getInstance().showSettingsDialog(event.project, "Composable Preview")
+                            }
+                        })
+                        .notify(project)
+                    return@runWriteCommandAction
+                }
                 Behaviour.increment -> {
                     val incrementedFunctionName = createIncrementedFunctionName(newFunction.name!!, psiFile)
                     val renamedNewFunction = newFunction.setName(incrementedFunctionName)

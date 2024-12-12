@@ -84,7 +84,7 @@ class PreviewConfigurable(private val project: Project, private val coroutineSco
             }
             buttonsGroup {
                 row {
-                    customTheme = radioButton("Project Theme:", Theme.project)
+                    customTheme = radioButton("Project theme:", Theme.project)
                     projectTheme = textField()
                     projectTheme
                         .text("Searching for Theme…")
@@ -109,7 +109,7 @@ class PreviewConfigurable(private val project: Project, private val coroutineSco
                     contextHelp("Uses a theme that was found in the project. Themes are toplevel composable functions that contain the keyword \"Theme\" and have at least one composable argument.")
                 }
                 row {
-                    radioButton("Custom Theme:", Theme.custom)
+                    radioButton("Custom theme:", Theme.custom)
                     textField()
                         .bindText(previewSettings::defaultTheme)
                         .validationOnInput {

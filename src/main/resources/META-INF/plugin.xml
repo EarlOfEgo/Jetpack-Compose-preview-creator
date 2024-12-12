@@ -7,6 +7,8 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.kotlin</depends>
 
+    <resource-bundle>messages.compose-preview-creator</resource-bundle>
+
     <actions>
         <action id="CreateComposePreviewAction"
                 class="dev.hagios.jetpackcomposepreviewcreator.actions.CreateComposePreviewAction"
@@ -15,6 +17,12 @@
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
     </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="Compose Preview Function Generator Group"
+                           displayType="BALLOON"
+                           key="notification.group.name"/>
+    </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
         <projectConfigurable
