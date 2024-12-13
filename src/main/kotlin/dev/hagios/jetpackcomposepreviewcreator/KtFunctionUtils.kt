@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.inspections.collections.isCollection
 import org.jetbrains.kotlin.idea.inspections.collections.isMap
+import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.js.descriptorUtils.getKotlinTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -68,7 +69,35 @@ private fun getDefaultParameterValue(ktParameter: KtParameter, settings: Preview
     val typeRef = ktParameter.typeReference ?: return "null"
     val type = context[BindingContext.TYPE, typeRef] ?: return "null"
     val isNullable = type.isMarkedNullable
-    return getDefaultParameterValue(type, isNullable, settings)
+    return if (hasCompanionObjectImplementingItself(ktParameter)) {
+        if (isNullable && settings.useNullValues) {
+            "null"
+        } else {
+            type.constructor.toString()
+        }
+    } else {
+        getDefaultParameterValue(type, isNullable, settings)
+    }
+}
+
+/**
+ * Checks if an interface implements itself in a companion object, like Modifiers.
+ * interface Modifier {
+ *  companion object: Modifier
+ * }
+ */
+private fun hasCompanionObjectImplementingItself(parameter: KtParameter): Boolean {
+
+    val interfaceElement =
+        (parameter.typeReference?.typeElement as? KtUserType)?.referenceExpression?.mainReference?.resolve() as? KtClassOrObject
+    val interfaceName = interfaceElement?.name ?: return false
+
+    return interfaceElement.companionObjects.any { companionObject ->
+        val superTypes = companionObject.superTypeListEntries
+            .mapNotNull { it.typeReference?.typeElement as? KtUserType }
+
+        superTypes.any { it.referencedName == interfaceName }
+    }
 }
 
 private fun getDefaultParameterValue(type: KotlinType, isNullable: Boolean, settings: PreviewSettings): String {

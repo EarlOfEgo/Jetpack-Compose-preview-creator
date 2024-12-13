@@ -7,6 +7,7 @@
 
 ### Added
 
+- Handle interfaces which implement themselves in a companion object, like Modifier
 - Choose the position where the generated preview function is placed in the file
 - Choose the behaviour when a preview function already exists
 
