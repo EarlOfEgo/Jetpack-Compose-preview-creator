@@ -130,14 +130,14 @@ class PreviewConfigurable(private val project: Project, private val coroutineSco
 
 private fun projectThemeFunction(project: Project): String? {
     return ReadAction.compute<String?, Throwable> {
-        val virtualFiles = FileTypeIndex.getFiles(KotlinFileType.INSTANCE, GlobalSearchScope.allScope(project))
+        val virtualFiles = FileTypeIndex.getFiles(KotlinFileType.INSTANCE, GlobalSearchScope.projectScope(project))
         var foundThemeFunction: KtNamedFunction? = null
         for (virtualFile in virtualFiles) {
             val psiFile = PsiManager.getInstance(project).findFile(virtualFile)
             psiFile?.accept(
                 object : KtTreeVisitorVoid() {
                     override fun visitNamedFunction(function: KtNamedFunction) {
-                        if (function.isComposableToplevelFunction && function.text.contains("Theme")) {
+                        if (function.isComposableToplevelFunction && function.name?.contains("Theme") == true) {
                             val contentComposableParameter = function.valueParameters.lastOrNull {
                                 val context = it.analyze(BodyResolveMode.PARTIAL)
                                 val typeReference = context[BindingContext.TYPE, it.typeReference]

@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Only use themes that are in the project
+
 ## [1.3.0] - 2024-12-16
 
 ### Added
