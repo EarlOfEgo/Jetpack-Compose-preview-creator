@@ -22,11 +22,11 @@ Generate Compose Preview". The preview is added at the end of the file with an s
 
 ### Simple creation
 
-![](media/demo-1.webm)
+![](media/demo-1.gif)
 
 ### Wrap into theme
 
-![](media/demo-2.webm)
+![](media/demo-2.gif)
 
 ### Configure the behaviour
 
@@ -35,10 +35,10 @@ Generate Compose Preview". The preview is added at the end of the file with an s
 ## Installation
 
 - Using the IDE built-in plugin system:
-  
+
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Jetpack-Compose-preview-creator"</kbd> >
   <kbd>Install</kbd>
-  
+
 - Using JetBrains Marketplace:
 
   Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/25951-jetpack-compose-preview-creator) and install
