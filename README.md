@@ -30,7 +30,7 @@ Generate Compose Preview". The preview is added at the end of the file with an s
 
 ### Configure the behaviour
 
-![](media/settings.png)
+![](media/demo-3.gif)
 
 ## Installation
 
