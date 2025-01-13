@@ -20,7 +20,9 @@ Generate Compose Preview". The preview is added at the end of the file with an s
 </p>
 <!-- Plugin description end -->
 
-![](media/demo.gif)
+| Simple creation | ![](media/demo-1.webm) |
+| Wrap into theme | ![](media/demo-2.webm) |
+| Configure the behaviour | ![](media/settings.png) |
 
 ## Installation
 
