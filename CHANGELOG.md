@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.3.1] - 2025-01-28
+
 ### Fixed
 
 - Only use themes that are in the project
@@ -30,7 +32,8 @@
 
 - Added settings for: parameter names, default values and theme
 
-[Unreleased]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/commits/v1.1.0
