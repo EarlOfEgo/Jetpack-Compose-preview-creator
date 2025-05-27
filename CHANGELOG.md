@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Bumped intellij version
+
 ## [1.3.1] - 2025-01-28
 
 ### Fixed
