@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Bumped versions
+
 ## [1.4.0] - 2025-05-27
 
 ### Fixed
