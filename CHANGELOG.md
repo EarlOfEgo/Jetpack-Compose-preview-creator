@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.5.0] - 2025-08-14
+
 ### Fixed
 
 - Bumped versions
@@ -42,7 +44,8 @@
 
 - Added settings for: parameter names, default values and theme
 
-[Unreleased]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/EarlOfEgo/Jetpack-Compose-preview-creator/compare/v1.2.0...v1.3.0
